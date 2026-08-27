@@ -10,6 +10,17 @@ from __future__ import annotations
 
 from .models import KarakaEdge, Token
 
+# kāraka role → its usual English names (used when explaining, and by the verifier so an English
+# role word in a reading isn't mistaken for invented content)
+KARAKA_ENGLISH: dict[str, str] = {
+    "kartā": "agent doer subject",
+    "karma": "object patient goal",
+    "karaṇa": "instrument means",
+    "sampradāna": "recipient beneficiary",
+    "apādāna": "source origin",
+    "adhikaraṇa": "locus location place",
+}
+
 # case (vibhakti) → default kāraka role
 CASE_TO_KARAKA: dict[str, str] = {
     "nominative": "kartā",      # agent

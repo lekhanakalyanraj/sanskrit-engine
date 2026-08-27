@@ -6,13 +6,17 @@
 # works end to end. It is deliberately small (the gold vocabulary); bulk Monier-Williams
 # ingestion into the same SQLite table is the next data task (see knowledge/README.md).
 
+# NOTE: gloss ORDER matters. The explainer tends to take the FIRST sense listed, so put the
+# primary/most idiomatic sense first (measured: "calculator, mathematician" made the model render
+# gaṇaka as "calculator"; reordering fixed it — see evals/faithfulness.py).
+
 # ── nouns (pratipadika) ──────────────────────────────────────────────
 bAla:   "boy, child; young"
 nara:   "man, person"
 muni:   "sage, ascetic, seer"
 fzi:    "seer, inspired poet-sage"
 kavi:   "poet; wise one"
-gaRaka: "calculator, mathematician, astronomer"
+gaRaka: "mathematician, calculator, astronomer"
 Sizya:  "pupil, student, disciple"
 rogin:  "sick person, patient"
 rAma:   "Rāma (proper name; hero of the Rāmāyaṇa); pleasing"
@@ -33,7 +37,7 @@ jYAna:  "knowledge, cognition, insight"
 satya:  "truth; real, true"
 Atman:  "self, soul; the innermost essence"
 saMKyA: "number; enumeration, count"
-SUnya:  "empty, void; (mathematics) zero"
+SUnya:  "zero (the mathematical zero); empty, void"
 
 # ── verb roots (dhātu) ───────────────────────────────────────────────
 KAd:  "to eat, chew, devour"
