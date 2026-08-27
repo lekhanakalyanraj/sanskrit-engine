@@ -1,0 +1,21 @@
+# Python
+__pycache__/
+*.pyc
+.venv/
+
+# Generated artifacts (rebuilt from code)
+# sanskrit.db: python -m knowledge.dictionary  (+ knowledge.ingest_mw for MW)
+knowledge/sanskrit.db
+# embedded Qdrant store: knowledge.vectorstore.build_index
+knowledge/qdrant/
+graph.json
+graph.html
+
+# Downloaded data caches
+# vidyut: python -c "import vidyut; vidyut.download_data('vidyut-data')"
+vidyut-data/
+# MW source (~44 MB): re-downloaded by knowledge.ingest_mw
+knowledge/mw.tsv
+
+# OS
+.DS_Store

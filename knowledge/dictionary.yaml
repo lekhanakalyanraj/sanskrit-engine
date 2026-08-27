@@ -1,0 +1,50 @@
+# SPDX-License-Identifier: CC-BY-SA-4.0
+# Copyright (C) 2026 Lekhana Kalyan Raj
+#
+# Seed lexicon — concise, MW-style English glosses keyed by SLP1 lemma (as the engine produces).
+# This bootstraps the symbolic dictionary store so the pipeline → dictionary → playground path
+# works end to end. It is deliberately small (the gold vocabulary); bulk Monier-Williams
+# ingestion into the same SQLite table is the next data task (see knowledge/README.md).
+
+# ── nouns (pratipadika) ──────────────────────────────────────────────
+bAla:   "boy, child; young"
+nara:   "man, person"
+muni:   "sage, ascetic, seer"
+fzi:    "seer, inspired poet-sage"
+kavi:   "poet; wise one"
+gaRaka: "calculator, mathematician, astronomer"
+Sizya:  "pupil, student, disciple"
+rogin:  "sick person, patient"
+rAma:   "Rāma (proper name; hero of the Rāmāyaṇa); pleasing"
+gaja:   "elephant"
+nadI:   "river"
+sAgara: "ocean, sea"
+meGa:   "cloud"
+vana:   "forest, grove"
+puzpa:  "flower, blossom"
+Pala:   "fruit; result, reward"
+anna:   "food, grain"
+jala:   "water"
+hasta:  "hand"
+OzaDa:  "herb, medicinal plant; medicine"
+kAvya:  "poetry, poem; the art of poetry"
+SAstra: "treatise, scripture; science, discipline"
+jYAna:  "knowledge, cognition, insight"
+satya:  "truth; real, true"
+Atman:  "self, soul; the innermost essence"
+saMKyA: "number; enumeration, count"
+SUnya:  "empty, void; (mathematics) zero"
+
+# ── verb roots (dhātu) ───────────────────────────────────────────────
+KAd:  "to eat, chew, devour"
+pA:   "to drink"
+gam:  "to go, move, come"
+dfS:  "to see, perceive, look at"
+vad:  "to speak, say, tell"
+jYA:  "to know, understand"
+iz:   "to wish, desire, seek"
+paW:  "to recite, read, study"
+gaRi: "to count, reckon, compute"
+raci: "to arrange, compose, produce"
+vfz:  "to rain, pour down"
+dA:   "to give, grant, bestow"

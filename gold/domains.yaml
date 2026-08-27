@@ -1,0 +1,105 @@
+# SPDX-License-Identifier: CC-BY-SA-4.0
+# Copyright (C) 2026 Lekhana Kalyan Raj
+#
+# Domain gold set — grammatically simple (SVO) sentences using vocabulary from mathematics,
+# philosophy, poetry, and medicine. These encode the product principle that Sanskrit expresses
+# the full range of human knowledge, NOT just religion (PRD §5) — as a CI-enforced test, not a
+# claim in a doc. (Real classical *verse* is far more complex than the current core handles; these
+# stay simple on purpose. Domain breadth of the vocabulary is the point, not syntactic difficulty.)
+
+# ── Mathematics ──────────────────────────────────────────────────────────────
+- id: ganaka-sankhya-ganayati
+  sentence_dev: "गणकः संख्यां गणयति"
+  gloss_en: "The mathematician computes the number."
+  domain: mathematics
+  source: "composed (domain vocabulary, simple syntax)"
+  tokens:
+    - {slp1: gaRakas,   lemma: gaRaka, pos: noun, case: nominative, karaka: kartā}
+    - {slp1: saMKyAm,   lemma: saMKyA, pos: noun, case: accusative, karaka: karma}
+    - {slp1: gaRayati,  lemma: gaRi,   pos: verb}
+
+- id: ganaka-shunya-janati
+  sentence_dev: "गणकः शून्यं जानाति"
+  gloss_en: "The mathematician knows zero."
+  domain: mathematics
+  note: "śūnya = zero — Sanskrit's own mathematical vocabulary."
+  source: "composed (domain vocabulary, simple syntax)"
+  tokens:
+    - {slp1: gaRakas,  lemma: gaRaka, pos: noun, case: nominative, karaka: kartā}
+    - {slp1: SUnyam,   lemma: SUnya,  pos: noun, case: accusative, karaka: karma}
+    - {slp1: jAnAti,   lemma: jYA,    pos: verb}
+
+# ── Philosophy ───────────────────────────────────────────────────────────────
+- id: muni-satya-vadati
+  sentence_dev: "मुनिः सत्यं वदति"
+  gloss_en: "The sage speaks the truth."
+  domain: philosophy
+  source: "composed (domain vocabulary, simple syntax)"
+  tokens:
+    - {slp1: munis,   lemma: muni,  pos: noun, case: nominative, karaka: kartā}
+    - {slp1: satyam,  lemma: satya, pos: noun, case: accusative, karaka: karma}
+    - {slp1: vadati,  lemma: vad,   pos: verb}
+
+- id: shishya-jnana-icchati
+  sentence_dev: "शिष्यः ज्ञानम् इच्छति"
+  gloss_en: "The student desires knowledge."
+  domain: philosophy
+  source: "composed (domain vocabulary, simple syntax)"
+  tokens:
+    - {slp1: Sizyas,  lemma: Sizya, pos: noun, case: nominative, karaka: kartā}
+    - {slp1: jYAnam,  lemma: jYAna, pos: noun, case: accusative, karaka: karma}
+    - {slp1: icCati,  lemma: iz,    pos: verb}
+
+- id: rishi-atman-janati
+  sentence_dev: "ऋषिः आत्मानं जानाति"
+  gloss_en: "The seer knows the self."
+  domain: philosophy
+  note: "ātman (self) — accusative ātmānam; core Vedāntic vocabulary."
+  source: "composed (domain vocabulary, simple syntax)"
+  tokens:
+    - {slp1: fzis,    lemma: fzi,   pos: noun, case: nominative, karaka: kartā}
+    - {slp1: AtmAnam, lemma: Atman, pos: noun, case: accusative, karaka: karma}
+    - {slp1: jAnAti,  lemma: jYA,   pos: verb}
+
+# ── Poetry / nature (kāvya themes) ───────────────────────────────────────────
+- id: kavi-kavya-rachayati
+  sentence_dev: "कविः काव्यं रचयति"
+  gloss_en: "The poet composes poetry."
+  domain: poetry
+  source: "composed (domain vocabulary, simple syntax)"
+  tokens:
+    - {slp1: kavis,     lemma: kavi,  pos: noun, case: nominative, karaka: kartā}
+    - {slp1: kAvyam,    lemma: kAvya, pos: noun, case: accusative, karaka: karma}
+    - {slp1: racayati,  lemma: raci,  pos: verb}
+
+- id: megha-jala-varshati
+  sentence_dev: "मेघः जलं वर्षति"
+  gloss_en: "The cloud rains water."
+  domain: poetry
+  source: "composed (domain vocabulary, simple syntax)"
+  tokens:
+    - {slp1: meGas,   lemma: meGa, pos: noun, case: nominative, karaka: kartā}
+    - {slp1: jalam,   lemma: jala, pos: noun, case: accusative, karaka: karma}
+    - {slp1: varzati, lemma: vfz,  pos: verb}
+
+- id: nadi-sagara-gacchati
+  sentence_dev: "नदी सागरं गच्छति"
+  gloss_en: "The river flows to the ocean."
+  domain: poetry
+  note: "Feminine ī-stem subject (nadī) — gender variety."
+  source: "composed (domain vocabulary, simple syntax)"
+  tokens:
+    - {slp1: nadI,     lemma: nadI,   pos: noun, case: nominative, karaka: kartā}
+    - {slp1: sAgaram,  lemma: sAgara, pos: noun, case: accusative, karaka: karma}
+    - {slp1: gacCati,  lemma: gam,    pos: verb}
+
+# ── Medicine (Āyurveda themes) ───────────────────────────────────────────────
+- id: rogi-aushadha-icchati
+  sentence_dev: "रोगी औषधम् इच्छति"
+  gloss_en: "The patient wants medicine."
+  domain: medicine
+  source: "composed (domain vocabulary, simple syntax)"
+  tokens:
+    - {slp1: rogI,    lemma: rogin, pos: noun, case: nominative, karaka: kartā}
+    - {slp1: OzaDam,  lemma: OzaDa, pos: noun, case: accusative, karaka: karma}
+    - {slp1: icCati,  lemma: iz,    pos: verb}

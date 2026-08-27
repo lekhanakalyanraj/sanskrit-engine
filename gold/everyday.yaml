@@ -1,0 +1,82 @@
+# SPDX-License-Identifier: CC-BY-SA-4.0
+# Copyright (C) 2026 Lekhana Kalyan Raj
+#
+# Gold set — hand-verified expected output of the deterministic core.
+# The backbone for golden tests (structure), LLM evals (meaning), and regression.
+# Assert only what the bundled lexicon gets reliably right: lemma, pos, case, kāraka.
+# (gender is intentionally NOT asserted — the bundled lexicon mislabels it; fix comes with Vidyut.)
+#
+# Domain here is "everyday" only, because the bundled sanskrit_parser lexicon lacks the
+# vocabulary of the math/poetry/philosophy lines we want. Domain breadth grows once the
+# morphology engine is upgraded (Phase 1 evaluation → Vidyut). See gold/README.md.
+
+- id: bala-phala-khadati
+  sentence_dev: "बालः फलं खादति"
+  gloss_en: "The boy eats fruit."
+  domain: everyday
+  source: "pedagogical / common usage"
+  tokens:
+    - {slp1: bAlas,  lemma: bAla, pos: noun, case: nominative, karaka: kartā}
+    - {slp1: Palam,  lemma: Pala, pos: noun, case: accusative, karaka: karma}
+    - {slp1: KAdati, lemma: KAd,  pos: verb}
+
+- id: bala-hastena-annam-khadati
+  sentence_dev: "बालः हस्तेन अन्नं खादति"
+  gloss_en: "The boy eats food with his hand."
+  domain: everyday
+  source: "pedagogical / common usage"
+  tokens:
+    - {slp1: bAlas,   lemma: bAla,  pos: noun, case: nominative,   karaka: kartā}
+    - {slp1: hastena, lemma: hasta, pos: noun, case: instrumental, karaka: karaṇa}
+    - {slp1: annam,   lemma: anna,  pos: noun, case: accusative,   karaka: karma}
+    - {slp1: KAdati,  lemma: KAd,   pos: verb}
+
+- id: nara-jala-pibati
+  sentence_dev: "नरः जलं पिबति"
+  gloss_en: "The man drinks water."
+  domain: everyday
+  source: "pedagogical / common usage"
+  tokens:
+    - {slp1: naras,  lemma: nara, pos: noun, case: nominative, karaka: kartā}
+    - {slp1: jalam,  lemma: jala, pos: noun, case: accusative, karaka: karma}
+    - {slp1: pibati, lemma: pA,   pos: verb}
+
+- id: gaja-vana-gacchati
+  sentence_dev: "गजः वनं गच्छति"
+  gloss_en: "The elephant goes to the forest."
+  domain: everyday
+  source: "pedagogical / common usage"
+  tokens:
+    - {slp1: gajas,   lemma: gaja, pos: noun, case: nominative, karaka: kartā}
+    - {slp1: vanam,   lemma: vana, pos: noun, case: accusative, karaka: karma}
+    - {slp1: gacCati, lemma: gam,  pos: verb}
+
+- id: nara-phala-khadati
+  sentence_dev: "नरः फलं खादति"
+  gloss_en: "The man eats fruit."
+  domain: everyday
+  source: "pedagogical / common usage"
+  tokens:
+    - {slp1: naras,  lemma: nara, pos: noun, case: nominative, karaka: kartā}
+    - {slp1: Palam,  lemma: Pala, pos: noun, case: accusative, karaka: karma}
+    - {slp1: KAdati, lemma: KAd,  pos: verb}
+
+- id: gaja-jala-pibati
+  sentence_dev: "गजः जलं पिबति"
+  gloss_en: "The elephant drinks water."
+  domain: everyday
+  source: "pedagogical / common usage"
+  tokens:
+    - {slp1: gajas,  lemma: gaja, pos: noun, case: nominative, karaka: kartā}
+    - {slp1: jalam,  lemma: jala, pos: noun, case: accusative, karaka: karma}
+    - {slp1: pibati, lemma: pA,   pos: verb}
+
+- id: bala-vana-gacchati
+  sentence_dev: "बालः वनं गच्छति"
+  gloss_en: "The boy goes to the forest."
+  domain: everyday
+  source: "pedagogical / common usage"
+  tokens:
+    - {slp1: bAlas,   lemma: bAla, pos: noun, case: nominative, karaka: kartā}
+    - {slp1: vanam,   lemma: vana, pos: noun, case: accusative, karaka: karma}
+    - {slp1: gacCati, lemma: gam,  pos: verb}

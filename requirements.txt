@@ -1,0 +1,26 @@
+# Phase-0 spike dependencies
+indic-transliteration>=2.3.0   # Stage 0: script conversion (deterministic)
+vidyut>=0.4.0                  # Stages 1-2: rule-based segmentation (sandhi.Splitter) + morphology
+                              # (kosha). Deterministic, no ML. One-time data download:
+                              #   python -c "import vidyut; vidyut.download_data('vidyut-data')"
+pycdsl>=0.9.0                  # Stage 3: Monier-Williams dictionary lookup
+networkx>=3.0                  # graph structure for the kāraka graph
+# graphviz>=0.20               # optional: render graph.json to PNG (needs system graphviz)
+
+# Phase 1 — LLM layer (llm.py). All providers speak the OpenAI-compatible API.
+openai>=1.0                    # client for Ollama / Groq / HF / OpenRouter / Sarvam / Claude
+# instructor>=1.0              # optional: typed (Pydantic) structured output for agents
+
+# Phase 1 — dev tooling & tests
+pyyaml>=6.0                    # gold set (gold/*.yaml), seed lexicon & corpus (knowledge/*.yaml)
+pytest>=8.0                    # golden test harness
+streamlit>=1.30               # dev playground (streamlit run playground.py)
+
+# Phase 2 — knowledge & retrieval layer
+#   symbolic dictionary uses stdlib sqlite3; data via knowledge.ingest_mw (GitHub, no pip dep)
+qdrant-client>=1.7            # embedded vector store (local file path; no Docker for dev)
+fastembed>=0.3               # ONNX embeddings, no PyTorch; BGE-small now, BGE-M3 (multilingual) at scale
+
+# Phase 3 — agents (explainer + verifier)
+pydantic>=2.0                 # typed agent outputs (Explanation, Verdict)
+instructor>=1.0              # structured LLM output across providers (used at runtime by llm.chat_structured)

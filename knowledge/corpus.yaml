@@ -1,0 +1,64 @@
+# SPDX-License-Identifier: CC-BY-SA-4.0
+# Copyright (C) 2026 Lekhana Kalyan Raj
+#
+# Seed corpus for semantic ("essence") retrieval — famous, short, public-domain verses with
+# faithful English translations, spanning themes. The English translation is what gets embedded
+# (raw-Sanskrit embeddings are weak; the architecture calls for embedding the strong English side).
+# This bootstraps the vector layer end to end; bulk ingestion of a real verse+commentary corpus
+# (GRETIL, translation datasets) is the next data task (see knowledge/README.md).
+
+- id: gita-2-47
+  sanskrit_dev: "कर्मण्येवाधिकारस्ते मा फलेषु कदाचन"
+  iast: "karmaṇy evādhikāras te mā phaleṣu kadācana"
+  translation: "You have a right to action alone, never to its fruits."
+  source: "Bhagavad Gītā 2.47"
+  theme: "action and duty; detachment from results"
+
+- id: vidya-vinaya
+  sanskrit_dev: "विद्या ददाति विनयम्"
+  iast: "vidyā dadāti vinayam"
+  translation: "Knowledge bestows humility."
+  source: "Subhāṣita (Hitopadeśa)"
+  theme: "knowledge, learning, humility"
+
+- id: na-jayate
+  sanskrit_dev: "न जायते म्रियते वा कदाचित्"
+  iast: "na jāyate mriyate vā kadācit"
+  translation: "The self is never born, nor does it ever die."
+  source: "Bhagavad Gītā 2.20"
+  theme: "the self (ātman); the soul is eternal and immortal"
+
+- id: satyameva-jayate
+  sanskrit_dev: "सत्यमेव जयते"
+  iast: "satyam eva jayate"
+  translation: "Truth alone triumphs."
+  source: "Muṇḍaka Upaniṣad 3.1.6"
+  theme: "truth prevails over falsehood"
+
+- id: ahimsa-dharma
+  sanskrit_dev: "अहिंसा परमो धर्मः"
+  iast: "ahiṃsā paramo dharmaḥ"
+  translation: "Non-violence is the highest duty."
+  source: "Mahābhārata"
+  theme: "non-violence; the highest dharma and virtue"
+
+- id: udyamena
+  sanskrit_dev: "उद्यमेन हि सिध्यन्ति कार्याणि न मनोरथैः"
+  iast: "udyamena hi sidhyanti kāryāṇi na manorathaiḥ"
+  translation: "Tasks are accomplished by effort, not by mere wishes."
+  source: "Subhāṣita (Pañcatantra)"
+  theme: "effort and perseverance; work over daydreaming"
+
+- id: vasudhaiva
+  sanskrit_dev: "वसुधैव कुटुम्बकम्"
+  iast: "vasudhaiva kuṭumbakam"
+  translation: "The whole world is one family."
+  source: "Mahā Upaniṣad 6.71"
+  theme: "universal kinship; oneness of all people"
+
+- id: yogah-karmasu
+  sanskrit_dev: "योगः कर्मसु कौशलम्"
+  iast: "yogaḥ karmasu kauśalam"
+  translation: "Yoga is skill in action."
+  source: "Bhagavad Gītā 2.50"
+  theme: "yoga as excellence and skill in one's work"

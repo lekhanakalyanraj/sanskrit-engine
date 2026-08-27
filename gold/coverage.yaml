@@ -1,0 +1,52 @@
+# SPDX-License-Identifier: CC-BY-SA-4.0
+# Copyright (C) 2026 Lekhana Kalyan Raj
+#
+# Coverage gold set — sentences that FAILED under sanskrit_parser and now parse under Vidyut
+# (see EVAL-vidyut.md). These lock in the migration's coverage win as regression protection:
+#   • proper nouns (राम returned 0 analyses in Phase 0 — the canonical failure)
+#   • vocabulary the bundled lexicon lacked (मुनि)
+
+- id: rama-vana-gacchati
+  sentence_dev: "रामः वनं गच्छति"
+  gloss_en: "Rāma goes to the forest."
+  domain: narrative
+  note: "Proper noun — returned 0 analyses under sanskrit_parser (Phase-0 canonical failure)."
+  source: "pedagogical / common usage"
+  tokens:
+    - {slp1: rAmas,   lemma: rAma, pos: noun, case: nominative, karaka: kartā}
+    - {slp1: vanam,   lemma: vana, pos: noun, case: accusative, karaka: karma}
+    - {slp1: gacCati, lemma: gam,  pos: verb}
+
+- id: rama-hastena-annam-khadati
+  sentence_dev: "रामः हस्तेन अन्नं खादति"
+  gloss_en: "Rāma eats food with his hand."
+  domain: narrative
+  note: "Proper noun + three kāraka roles."
+  source: "pedagogical / common usage"
+  tokens:
+    - {slp1: rAmas,   lemma: rAma,  pos: noun, case: nominative,   karaka: kartā}
+    - {slp1: hastena, lemma: hasta, pos: noun, case: instrumental, karaka: karaṇa}
+    - {slp1: annam,   lemma: anna,  pos: noun, case: accusative,   karaka: karma}
+    - {slp1: KAdati,  lemma: KAd,   pos: verb}
+
+- id: muni-jala-pibati
+  sentence_dev: "मुनिः जलं पिबति"
+  gloss_en: "The sage drinks water."
+  domain: everyday
+  note: "मुनि returned 0 analyses under sanskrit_parser (masculine -iḥ gap)."
+  source: "pedagogical / common usage"
+  tokens:
+    - {slp1: munis,  lemma: muni, pos: noun, case: nominative, karaka: kartā}
+    - {slp1: jalam,  lemma: jala, pos: noun, case: accusative, karaka: karma}
+    - {slp1: pibati, lemma: pA,   pos: verb}
+
+- id: bala-pushpa-pashyati
+  sentence_dev: "बालः पुष्पं पश्यति"
+  gloss_en: "The boy sees the flower."
+  domain: everyday
+  note: "sanskrit_parser's segmenter produced NO candidates for this; Vidyut's Chedaka resolves it."
+  source: "pedagogical / common usage"
+  tokens:
+    - {slp1: bAlas,   lemma: bAla,  pos: noun, case: nominative, karaka: kartā}
+    - {slp1: puzpam,  lemma: puzpa, pos: noun, case: accusative, karaka: karma}
+    - {slp1: paSyati, lemma: dfS,   pos: verb}
