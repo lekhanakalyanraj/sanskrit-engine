@@ -14,13 +14,16 @@ upgrade). This is the deterministic-core's opposite number: grammar is computed,
 """
 from __future__ import annotations
 
+import os
 from pathlib import Path
 
 import yaml
 
 _HERE = Path(__file__).resolve().parent
 _CORPUS = _HERE / "corpus.yaml"
-_QDIR = _HERE / "qdrant"          # persisted, gitignored
+# Persisted store (gitignored). Embedded Qdrant is single-process, so a running playground would
+# otherwise lock out pytest — tests set SANSKRIT_QDRANT=":memory:" to stay hermetic.
+_QDIR = os.environ.get("SANSKRIT_QDRANT", str(_HERE / "qdrant"))
 _COLLECTION = "corpus"
 _MODEL = "BAAI/bge-small-en-v1.5"  # English; swap for BAAI/bge-m3 (multilingual) at scale
 
@@ -35,7 +38,8 @@ def client():
         import atexit
 
         from qdrant_client import QdrantClient
-        _client = QdrantClient(path=str(_QDIR))
+        # ":memory:" is the location arg, not a path — used by tests for isolation
+        _client = QdrantClient(":memory:") if _QDIR == ":memory:" else QdrantClient(path=str(_QDIR))
         atexit.register(close)  # close cleanly before teardown — avoids a native crash in __del__
     return _client
 

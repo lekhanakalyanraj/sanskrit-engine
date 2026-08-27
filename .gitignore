@@ -16,6 +16,10 @@ graph.html
 vidyut-data/
 # MW source (~44 MB): re-downloaded by knowledge.ingest_mw
 knowledge/mw.tsv
-
+ARCHITECTURE.md
+BACKLOG.md
+EVAL-vidyut.md
+PLAN.MD
+PRD.MD
 # OS
 .DS_Store
