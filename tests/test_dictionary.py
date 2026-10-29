@@ -39,3 +39,49 @@ def test_attach_senses_fills_tokens():
     by_lemma = {t.analysis.lemma: t.senses for t in result.tokens}
     assert any("water" in s.gloss for s in by_lemma["jala"])
     assert any("drink" in s.gloss for s in by_lemma["pA"])
+
+
+# ── Dhātupāṭha ───────────────────────────────────────────────────────────────────────────────────
+# Pāṇini's own root list, with the artha that states each root's sense. It had been on disk all
+# along, referenced in one line as a boolean. Verbs anchor the kāraka graph and MW's verb entries
+# are its messiest, so this is where an authoritative source matters most.
+
+def test_dhatupatha_gives_roots_their_own_meaning():
+    """`pā` is two homonymous roots — *pāne* "drink" and *rakṣaṇe* "protect" — and both are kept.
+    The Sanskrit artha travels with the English so the authority is visible, not just its rendering."""
+    dhatu = [s.gloss for s in lookup("pA") if s.source == "dhatupatha"]
+    assert dhatu, "no Dhātupāṭha sense for pA"
+    assert any("drink" in g.lower() and "pAne" in g for g in dhatu)
+    assert any("protect" in g.lower() for g in dhatu)      # the second root is not lost
+
+
+@pytest.mark.parametrize("prefixed, expected", [
+    ("aDigam", "acquire"),      # NOT the base root's "to go"
+    ("Agam", "come"),
+    ("parABU", "defeat"),       # NOT "to exist"
+])
+def test_a_readers_dictionary_outranks_the_inherited_artha(prefixed, expected):
+    """Vidyut inherits a root's artha across prefixes, so `parābhū` is listed "to exist" when it
+    means "to perish". Apte and Macdonell record the prefixed sense, so they must come first."""
+    first = lookup(prefixed)[0]
+    assert first.source in ("apte", "macdonell", "seed")
+    assert expected in first.gloss.lower()
+
+
+def test_homonymous_roots_are_resolved_by_gana():
+    """`kṛ` is two roots: svādi *hiṃsāyām* "to kill" and tanādi *karaṇe* "to do". The Dhātupāṭha
+    lists both and cannot choose — but the morphology already did, because the inflected form came
+    from one specific dhātu. Without this, the commonest verb in Sanskrit glosses as "to kill"."""
+    from core import analyze_sentence
+    r = attach_senses(analyze_sentence("रामः कर्म करोति"))
+    verb = next(t for t in r.tokens if t.analysis and t.analysis.pos == "verb")
+    assert verb.analysis.features.get("gana") == "tanAdi"
+    assert "to do" in verb.senses[0].gloss
+
+
+def test_panini_outranks_the_lexicographers_for_a_base_root():
+    """The 19th-century dictionaries are downstream of the Dhātupāṭha, so for a base root the
+    artha-nirdeśa is the authority — but only for a base root, not a prefix expansion."""
+    top = [s for s in lookup("BU") if s.source != "seed"][0]
+    assert top.source == "dhatupatha"
+    assert "sattAyAm" in top.gloss

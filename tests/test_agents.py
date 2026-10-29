@@ -47,18 +47,23 @@ def test_explain_passes_through_stub():
     assert isinstance(e, Explanation) and "boy" in e.translation.lower()
 
 
-def test_deterministic_signals_flags_missing_verb():
-    r = attach_senses(analyze_sentence("बालः अन्नम्"))  # two nouns, no verb
-    assert "no finite verb was identified" in deterministic_signals(r)
+def test_verbless_sentence_is_not_treated_as_unsound():
+    """68% of real Sanskrit sentences have no finite verb — the copula is dropped and sastra prose
+    is definitional. Flagging that marked down the majority of CORRECT parses and broke the
+    calibration contract: `high` was less accurate than `low` on case."""
+    r = attach_senses(analyze_sentence("बालः अन्नम्"))  # two nouns, no verb — perfectly normal
+    assert deterministic_signals(r) == []
 
 
 def test_verifier_caps_confidence_when_core_is_shaky():
-    r = attach_senses(analyze_sentence("बालः अन्नम्"))          # no verb → 1 core signal
+    # An unrecognised word necessarily also has no dictionary meaning, so this fires BOTH core
+    # signals and caps to `low` rather than `medium`. The two are coupled by construction.
+    r = attach_senses(analyze_sentence("बालः क्ष्व्रुडः"))       # 2nd word is not a word
     e = Explanation(translation="boy, food", reading="a boy and food")
     v = verify(e, build_grounding(r), r, llm=stub_llm)        # stub claims high + grounded
-    assert v.confidence == "medium"                           # capped down by the core signal
+    assert v.confidence == "low"                              # capped down by the core signals
     assert v.grounded is False                                # can't be grounded with a core issue
-    assert any("verb" in i for i in v.issues)
+    assert any("recognised" in i for i in v.issues)
 
 
 def test_understand_end_to_end_with_stub():

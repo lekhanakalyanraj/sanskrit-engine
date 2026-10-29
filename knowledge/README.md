@@ -57,7 +57,26 @@ dictionary glosses). The store persists to `knowledge/qdrant/` (gitignored); `bu
 - *Embed the English side* — raw-Sanskrit embeddings are weak; we retrieve by meaning through the
   strong English translation (the architecture's caveat).
 
-**Known limit:** BGE-small on 2–3 word gloss-queries is crude. **Upgrades:** BGE-M3 (multilingual,
-hybrid dense+sparse) for better recall, and a real verse+commentary corpus (GRETIL texts +
-translation datasets) — the bulk-ingestion task parallel to MW above. Then Phase 3's LLM turns
-structure + meanings + these retrieved passages into a grounded reading, checked by the verifier.
+### Corpus — curated seed + bulk ingestion (done)
+
+`ingest_corpus.py` pulls all **700 Bhagavad Gītā verses** from
+[AdiyogiArts/gita-json](https://github.com/AdiyogiArts/gita-json) (**MIT**) — Devanagari, IAST,
+English translation, and a per-verse **commentary**. Normalised to `corpus_gita.json` (gitignored,
+regenerable), loaded by `build_index()` alongside the curated `corpus.yaml` seed.
+
+```bash
+python -m knowledge.ingest_corpus     # download + normalise (701 verses)
+python -m knowledge.vectorstore       # rebuild the index (~95s for 709 passages)
+```
+
+**We embed translation + commentary**, not translation alone: a verse's essence lives in how it is
+expounded, so commentary makes thematic matching far sharper. Measured effect — the query *"do your
+work without attachment"* went from returning a generic subhāṣita to returning **BG 3.19, 4.14 and
+2.47**, the karma-yoga verses.
+
+Feeding those passages to the explainer did **not** contaminate translations (mean similarity
+0.989, grounded 10/10) — the prompt marks them as context, and the verifier is the backstop.
+
+**Known limit:** BGE-small is still English-only and crude on 2–3 word gloss queries.
+**Next upgrade:** BGE-M3 (multilingual, hybrid dense+sparse), and more texts beyond the Gītā
+(Upaniṣads, kāvya, śāstra) so the corpus matches the project's non-religious breadth.

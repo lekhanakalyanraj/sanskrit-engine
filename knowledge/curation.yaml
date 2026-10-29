@@ -1,0 +1,90 @@
+# SPDX-License-Identifier: CC-BY-SA-4.0
+# Human curation of the dictionary — hide junk, correct glosses, add missing senses.
+# Applied on top of generated data by knowledge.curation.apply_rules; survives re-ingest.
+- lemma: kfzRa
+  action: hide
+  at: '2026-08-27T09:12:57+00:00'
+  gloss: wicked, evil
+- lemma: kfzRa
+  action: hide
+  at: '2026-08-27T09:13:14+00:00'
+  gloss: the fourth or Kali-yuga
+- lemma: kfzRa
+  action: hide
+  at: '2026-08-27T09:13:59+00:00'
+  gloss: a crow
+  note: very short
+- lemma: kfzRa
+  action: hide
+  at: '2026-08-27T09:14:19+00:00'
+  gloss: N. of an attendant in Skanda's retinue
+  note: proper name
+- lemma: kfzRa
+  action: hide
+  at: '2026-08-27T09:14:25+00:00'
+  gloss: of an Asura 12936; Sāy. on
+  note: citation digits
+- lemma: kfzRa
+  action: hide
+  at: '2026-08-27T09:14:26+00:00'
+  gloss: of a king of the Nāgas ii, 360; Divyāv. ii
+- lemma: kfzRa
+  action: hide
+  at: '2026-08-27T09:14:30+00:00'
+  gloss: of Arjuna (the most renowned of the Pāṇḍu princes, so named apparently from his colour as a child)
+- lemma: kfzRa
+  action: hide
+  at: '2026-08-27T09:14:30+00:00'
+  gloss: of Vyāsa 11089
+  note: citation digits
+- lemma: kfzRa
+  action: hide
+  at: '2026-08-27T09:14:33+00:00'
+  gloss: of a son of Śuka by Pīvarī (teacher of the Yoga) 980 ff
+- lemma: kfzRa
+  action: hide
+  at: '2026-08-27T09:14:34+00:00'
+  gloss: of a pupil of Bharad-vāja
+- lemma: kfzRa
+  action: hide
+  at: '2026-08-27T09:14:35+00:00'
+  gloss: of Havir-dhāna 83
+- lemma: kfzRa
+  action: hide
+  at: '2026-08-27T09:14:35+00:00'
+  gloss: of a son of Arjuna 1892
+  note: citation digits
+- lemma: kfzRa
+  action: hide
+  at: '2026-08-27T09:14:37+00:00'
+  gloss: of an adopted son of A-samañjas, 2039
+  note: citation digits
+- lemma: kfzRa
+  action: hide
+  at: '2026-08-27T09:14:38+00:00'
+  gloss: of a chief of the
+- lemma: kfzRa
+  action: hide
+  at: '2026-08-27T09:14:39+00:00'
+  gloss: of the author of a Comm. on the
+- lemma: kfzRa
+  action: hide
+  at: '2026-08-27T09:14:40+00:00'
+  gloss: of a poet
+- lemma: kfzRa
+  action: hide
+  at: '2026-08-27T09:14:40+00:00'
+  gloss: of the author of a Comm. on the Dayā-bhāga
+- lemma: tagara
+  action: flag
+  at: '2026-08-27T09:50:09+00:00'
+  gloss: (m.) = ˚raka 16 xiii, 5042; Buddh. lxxvii, 5 ff
+  note: starts mid-parenthesis, scholarly shorthand, citation digits
+- lemma: tagara
+  action: flag
+  at: '2026-08-27T09:50:21+00:00'
+  gloss: = -pura
+  note: very short
+- lemma: tagara
+  action: reviewed
+  at: '2026-08-27T09:50:27+00:00'

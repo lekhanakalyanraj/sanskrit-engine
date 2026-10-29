@@ -12,3 +12,5 @@ Must be set before knowledge.vectorstore is imported, hence this module-level as
 import os
 
 os.environ.setdefault("SANSKRIT_QDRANT", ":memory:")
+
+os.environ.setdefault("SANSKRIT_CORPUS_SEED_ONLY", "1")
