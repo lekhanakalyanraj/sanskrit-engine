@@ -24,6 +24,9 @@ class Sense:
     """A dictionary sense for a lemma."""
     source: str                         # e.g. "MW" (Monier-Williams)
     gloss: str
+    #: The gender the dictionary assigns THIS sense (masculine/feminine/neuter/"any" for mfn.).
+    #: None where the source records none. Optional so older callers keep working.
+    gender: str | None = None
 
 
 @dataclass

@@ -3,9 +3,12 @@
 """Stage 3 (vector) — semantic retrieval of related verses / commentary ("essence").
 
 The RAG half of the knowledge layer. Embedded Qdrant (local file, no Docker) + fastembed (ONNX,
-no PyTorch). We embed the English *translation* side — raw-Sanskrit embeddings are weak, so per the
-architecture we retrieve by meaning through English (BGE-small now; BGE-M3 multilingual is the
-upgrade). This is the deterministic-core's opposite number: grammar is computed, essence retrieved.
+no PyTorch). We embed the English side — translation **plus commentary** — because raw-Sanskrit
+embeddings are weak and a verse's essence lives in how it is expounded (BGE-small now; BGE-M3
+multilingual is the upgrade). The deterministic core's opposite number: grammar is computed,
+essence retrieved.
+
+Corpus = curated seed (corpus.yaml) + bulk-ingested corpora (corpus_*.json, see ingest_corpus.py).
 
     from knowledge.vectorstore import build_index, search, related_passages
     build_index()                       # embed the seed corpus (once)
@@ -14,6 +17,7 @@ upgrade). This is the deterministic-core's opposite number: grammar is computed,
 """
 from __future__ import annotations
 
+import json
 import os
 from pathlib import Path
 
@@ -27,7 +31,12 @@ _QDIR = os.environ.get("SANSKRIT_QDRANT", str(_HERE / "qdrant"))
 _COLLECTION = "corpus"
 _MODEL = "BAAI/bge-small-en-v1.5"  # English; swap for BAAI/bge-m3 (multilingual) at scale
 
-_PAYLOAD_KEYS = ("id", "sanskrit_dev", "iast", "translation", "source", "theme")
+_CORPUS_JSON = sorted(_HERE.glob("corpus_*.json"))  # bulk-ingested corpora (knowledge.ingest_corpus)
+# Tests set this: embedding 700+ verses per run is slow, and they only exercise retrieval mechanics
+# against the curated seed. The full corpus is exercised by evals/ instead.
+_SEED_ONLY = os.environ.get("SANSKRIT_CORPUS_SEED_ONLY") == "1"
+_PAYLOAD_KEYS = ("id", "sanskrit_dev", "iast", "translation", "commentary", "source", "theme")
+_EMBED_CHARS = 900  # keep each embedded passage within the model's useful window
 _client = None
 _embedder = None
 
@@ -63,12 +72,31 @@ def _embed(texts: list[str]) -> list[list[float]]:
     return [v.tolist() for v in _embedder.embed(texts)]
 
 
+def load_entries() -> list[dict]:
+    """Curated seed verses (corpus.yaml) plus any bulk-ingested corpora (corpus_*.json)."""
+    entries = list(yaml.safe_load(_CORPUS.read_text(encoding="utf-8")) or [])
+    if not _SEED_ONLY:
+        for path in _CORPUS_JSON:
+            entries.extend(json.loads(path.read_text(encoding="utf-8")))
+    return entries
+
+
+def _embed_text(entry: dict) -> str:
+    """What actually gets embedded: the translation plus any commentary.
+
+    Commentary is where a verse's *essence* lives — how the tradition reads it — so including it
+    lets a sentence about, say, duty retrieve verses discussed in those terms, not just ones whose
+    literal translation happens to share words.
+    """
+    return f"{entry['translation']} {entry.get('commentary', '')}".strip()[:_EMBED_CHARS]
+
+
 def build_index() -> int:
-    """Embed the seed corpus into Qdrant (recreates the collection). Returns #passages."""
+    """Embed the corpus into Qdrant (recreates the collection). Returns #passages."""
     from qdrant_client.models import Distance, PointStruct, VectorParams
 
-    entries = yaml.safe_load(_CORPUS.read_text(encoding="utf-8")) or []
-    vecs = _embed([e["translation"] for e in entries])  # embed the English side
+    entries = load_entries()
+    vecs = _embed([_embed_text(e) for e in entries])
     c = client()
     if c.collection_exists(_COLLECTION):
         c.delete_collection(_COLLECTION)

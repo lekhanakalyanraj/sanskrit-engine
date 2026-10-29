@@ -13,8 +13,11 @@ import streamlit as st
 from streamlit.components.v1 import html as st_html
 
 from core import analyze_sentence, to_iast
+from core.normalize import to_pausa
+from core.pronounce import pronounce
+from core.recite import scan
+from agents.explainer import senses_for
 from knowledge.dictionary import attach_senses
-from knowledge.vectorstore import related_passages
 from llm import PRESETS
 from render import render
 
@@ -29,9 +32,51 @@ GOLD_EXAMPLES = [
     "गजः वनं गच्छति",
 ]
 
+@st.cache_data(show_spinner="Reading the page…")
+def _ocr(image_bytes: bytes) -> str:
+    """OCR is slow (a VLM through llama.cpp), so cache on the image itself."""
+    import tempfile
+    from core.ocr import OllamaVision
+    with tempfile.NamedTemporaryFile(suffix=".png", delete=False) as fh:
+        fh.write(image_bytes)
+        path = fh.name
+    return OllamaVision().read(path)
+
+
+with st.expander("Read from an image", expanded=False):
+    st.caption("Photograph or scan a printed page. OCR output is checked word-by-word against the "
+               "lexicon before you parse it — Devanagari OCR drops vowel marks and confuses "
+               "व/ब, घ/ध, भ/म, so the misreads are predictable and worth catching. "
+               "Handwritten and palm-leaf manuscripts will not work: no off-the-shelf OCR reads them.")
+    _upload = st.file_uploader("Page image", type=["png", "jpg", "jpeg", "webp", "tif", "tiff"])
+    if _upload is not None:
+        st.image(_upload, use_container_width=True)
+        try:
+            _text = _ocr(_upload.getvalue())
+        except Exception as _e:  # noqa: BLE001 — surface backend/setup failures plainly
+            _text = ""
+            st.error(f"OCR failed: {_e}")
+        if not _text.strip():
+            st.error("OCR returned no text. That is a failure, not a clean page — check the image "
+                     "is legible and right-way-up, or try a higher-resolution capture.")
+        if _text.strip():
+            from core.ocr import validate as _validate
+            from core.normalize import to_devanagari as _dev
+            _suspects = _validate(_text)
+            if _suspects:
+                st.warning(f"{len(_suspects)} word(s) the lexicon does not recognise — "
+                           f"correct them below before parsing.")
+                for _s in _suspects[:8]:
+                    _alt = "  ·  ".join(_dev(g) for g in _s.suggestions) or "no suggestion"
+                    st.caption(f"**{_s.devanagari}** → {_alt}   _{_s.reason}_")
+            else:
+                st.success("Every word checks out against the lexicon.")
+            st.session_state["ocr_text"] = _text
+
 col_in, col_provider = st.columns([3, 1])
 with col_in:
-    sentence = st.text_input("Sanskrit sentence (Devanagari or IAST)", GOLD_EXAMPLES[0])
+    sentence = st.text_input("Sanskrit sentence (Devanagari or IAST)",
+                             st.session_state.get("ocr_text", GOLD_EXAMPLES[0]))
     st.caption("Try: " + " · ".join(GOLD_EXAMPLES[1:]))
 with col_provider:
     provider = st.selectbox("LLM provider (Phase 3)", list(PRESETS.keys()))
@@ -74,34 +119,72 @@ with right:
             for e in result.edges
         ] or [{"note": "no edges (no finite verb found)"}])
 
+# ── Recitation ────────────────────────────────────────────────────────────
+st.subheader("Recitation")
+
+_sc = scan(sentence)
+if not _sc.aksharas:
+    st.caption("Could not scan this input for metre.")
+else:
+    _head = _sc.metre or "metre not identified"
+    if _sc.form:
+        _head += f" · {_sc.form}"
+    st.markdown(f"**{_head}** · {_sc.matras()} mātrās")
+    st.caption("A long syllable is held twice as long as a short one — that is the whole of the "
+               "timing. Pause at ‖, breathe at ‖‖. The tune is learned by ear from a reciter; "
+               "what a text can give you is which syllables to hold and where to stop.")
+
+    for _r in _sc.read_along():
+        _syl = "  ".join(f"{s:<7s}" for s in _r["syllables"]) + _r["pause"]
+        _hold = "  ".join(f"{h:<7s}" for h in _r["hold"])
+        st.markdown(f"**pāda {_r['pada']}** · {_r['matras']} mātrās")
+        st.code(f"{_syl}\n{_hold}", language=None)
+
+    if len(_sc.padas) > 1:
+        _a, _b = _sc.read_along()[0]["matras"], _sc.read_along()[1]["matras"]
+        if _a != _b:
+            st.caption(f"The first pāda runs {_a} beats and the second {_b} — that drop is the "
+                       f"shape of the śloka, and you should be able to hear it.")
+
+    for _n in _sc.notes:
+        st.caption(f"• {_n}")
+
+    with st.expander("Metrical pattern (⏑ / —)", expanded=False):
+        st.code("   |   ".join("".join("—" if w == "G" else "⏑" for w in pada)
+                               for pada in _sc.padas), language=None)
+        st.caption("— guru (heavy) · ⏑ laghu (light). Heavy if the vowel is long, or a short "
+                   "vowel is closed by a consonant cluster, anusvāra or visarga.")
+
+with st.expander("Approximate English pronunciation", expanded=False):
+    _said = [pronounce(to_pausa(t.surface_slp1)) for t in result.tokens]
+    st.markdown("### " + "  ·  ".join(p.respelling for p in _said if p.respelling))
+    for _n in list(dict.fromkeys(n for p in _said for n in p.notes)):
+        st.caption(f"• {_n}")
+    st.caption("Approximate, and secondary to the scansion above. Short `a` is the vowel of *but*, "
+               "not *father* — `dharma` is DHUR-muh. CAPITALS follow the Latin-derived convention "
+               "Western pedagogy teaches; classical Sanskrit has no phonemic stress, so this is a "
+               "reading aid, not a fact about the language.")
+
 # ── Meaning (Phase 2: word-level dictionary senses) ───────────────────────
 st.subheader("Meaning")
-st.caption("Word-by-word dictionary senses (symbolic lookup). Read with the kāraka graph above: "
-           "who does what to whom, and what each word means.")
+st.caption("Word-by-word dictionary senses. Sanskrit words are layered — expand a word to see its "
+           "full range, which is where the meaning actually lives.")
 cols = st.columns(len(result.tokens) or 1)
 for col, t in zip(cols, result.tokens):
     role = next((e.role for e in result.edges if e.dependent == t.id), "verb" if t.analysis.pos == "verb" else "")
     with col:
         st.markdown(f"**{t.surface}**")
+        st.caption(f"{pronounce(to_pausa(t.surface_slp1)).respelling}")
         st.caption(f"{to_iast(t.analysis.lemma)}  ·  {role}" if role else to_iast(t.analysis.lemma))
-        st.write(t.senses[0].gloss if t.senses else "—")
-
-# ── Essence: related passages (vector retrieval) ──────────────────────────
-st.subheader("Related passages · essence")
-st.caption("Verses whose meaning is closest to this sentence — semantic retrieval (Qdrant + BGE) "
-           "over a seed corpus. The 'meaning is retrieved' half of the engine.")
-hits: list = []
-try:
-    with st.spinner("retrieving related verses…"):
-        hits = related_passages(result, k=3)
-    if hits:
-        for h in hits:
-            st.markdown(f"**{h['sanskrit_dev']}**  ·  *{h.get('iast', '')}*")
-            st.caption(f"{h['translation']}  —  {h['source']}  ·  score {h['score']}")
-    else:
-        st.write("— no related passages")
-except Exception as e:  # noqa: BLE001 — vector store is optional; don't break the page
-    st.warning(f"Vector store unavailable: {e}")
+        if t.senses:
+            st.write(t.senses[0].gloss)
+            extra = senses_for(t)[1:]
+            if extra:
+                with st.expander(f"{len(extra)} more senses"):
+                    for g in extra:
+                        st.caption(f"• {g}")
+        else:
+            st.write("—")
 
 # ── Grounded reading + verifier (Phase 3, LLM) ────────────────────────────
 import os
@@ -119,8 +202,8 @@ if st.button(f"Generate reading  ·  {provider} · {model_name}"):
         from agents.explainer import build_grounding, explain
         from agents.verifier import verify
         with st.spinner(f"asking {provider} ({model_name})… first call also loads the model"):
-            expl = explain(result, hits)
-            verdict = verify(expl, build_grounding(result, hits), result)
+            expl = explain(result)
+            verdict = verify(expl, build_grounding(result), result)
         st.session_state["reading"] = {"sentence": sentence, "provider": provider,
                                        "expl": expl, "verdict": verdict}
     except Exception as e:  # noqa: BLE001 — no LLM reachable is a normal dev state

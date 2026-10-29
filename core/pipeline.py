@@ -13,7 +13,7 @@ from .disambiguate import select
 from .karaka import build_karaka_edges
 from .models import ParseResult, Token
 from .morphology import analyze_candidates
-from .normalize import to_devanagari, to_slp1
+from .normalize import to_devanagari, to_pausa, to_slp1
 from .segment import segment
 
 
@@ -25,7 +25,7 @@ def analyze_sentence(sentence: str) -> ParseResult:
     candidate_lists = [analyze_candidates(w) for w in words]
     analyses = select(candidate_lists)  # deterministic simple-clause disambiguation
     tokens = [
-        Token(id=i, surface=to_devanagari(w), surface_slp1=w, analysis=a)
+        Token(id=i, surface=to_devanagari(to_pausa(w)), surface_slp1=w, analysis=a)
         for i, (w, a) in enumerate(zip(words, analyses))
     ]
 

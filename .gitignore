@@ -23,3 +23,33 @@ PLAN.MD
 PRD.MD
 # OS
 .DS_Store
+# ingested corpus (regenerate: python -m knowledge.ingest_corpus)
+knowledge/corpus_*.json
+knowledge/_gita_*.json
+# curation.yaml is HUMAN WORK — keep it tracked (CC-BY-SA, like the gold set)
+# DCS corpus cache (re-fetch: python -m knowledge.ingest_dcs)
+knowledge/dcs/
+
+# Generated / downloaded lexicon data (rebuilt by the ingests)
+knowledge/ap90.tsv
+knowledge/md.tsv
+knowledge/gita_verse.json
+knowledge/llm_sense.json
+knowledge/valency.json
+llm-sense-bundle.zip
+llm-sense-bundle/llm_sense.json
+EVAL-STRATEGY.md
+
+# Working notes — kept private; the publishable parts live in AUDIT.md
+EVAL-STRATEGY.md
+
+# Generated / downloaded lexicon data (every ingest rebuilds these from source)
+knowledge/ap90.tsv
+knowledge/md.tsv
+knowledge/gita_verse.json
+knowledge/llm_sense.json
+knowledge/valency.json
+llm-sense-bundle.zip
+llm-sense-bundle/llm_sense.json
+knowledge/uohyd/
+llm-sense-bundle/lemmas.tsv
